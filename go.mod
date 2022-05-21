@@ -11,4 +11,4 @@ require (
 	github.com/spf13/cobra v0.0.5
 )
 
-replace github.com/blugelabs/bluge_segment_api  v0.2.0 => github.com/zinclabs/bluge_segment_api  v0.2.0-0.20220521151415-cfa118d012e5
+replace github.com/blugelabs/bluge_segment_api => github.com/zinclabs/bluge_segment_api v0.2.1-0.20220521151415-cfa118d012e5

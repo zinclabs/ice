@@ -23,17 +23,19 @@ import (
 
 // Ice footer
 //
-// |========|========|========|========|====|====|====|
-// |     D# |     SF |      F |    FDV | CM |  V | CC |
-// |========|====|===|====|===|====|===|====|====|====|
+// |========|========|========|========|====|========|========|====|====|
+// |     D# |     SF |      F |    FDV | CM |  TMIN  |  TMAX  |  V | CC |
+// |========|====|===|====|===|====|===|====|========|========|====|====|
 //
-// D#  - number of docs
-// SF  - stored fields index offset
-//  F  - field index offset
-// FDV - field doc values offset
-// CM  - chunk Mode
-//  V  - version
-// CC  - crc32
+// D#   - number of docs
+// SF   - stored fields index offset
+//  F   - field index offset
+// FDV  - field doc values offset
+// CM   - chunk Mode
+// TMIN - minimum timestamp of segment
+// TMAX - maximum timestamp of segment
+//  V   - version
+// CC   - crc32
 
 type footer struct {
 	storedIndexOffset uint64
@@ -43,18 +45,22 @@ type footer struct {
 	crc               uint32
 	version           uint32
 	chunkMode         uint32
+	docTimeMin        uint64
+	docTimeMax        uint64
 }
 
 const (
 	crcWidth          = 4
 	verWidth          = 4
 	chunkWidth        = 4
+	timeMinWidth      = 8
+	timeMaxWidth      = 8
 	fdvOffsetWidth    = 8
 	fieldsOffsetWidth = 8
 	storedOffsetWidth = 8
 	numDocsWidth      = 8
-	footerLen         = crcWidth + verWidth + chunkWidth + fdvOffsetWidth +
-		fieldsOffsetWidth + storedOffsetWidth + numDocsWidth
+	footerLen         = crcWidth + verWidth + timeMinWidth + timeMaxWidth +
+		chunkWidth + fdvOffsetWidth + fieldsOffsetWidth + storedOffsetWidth + numDocsWidth
 )
 
 func parseFooter(data *segment.Data) (*footer, error) {
@@ -81,7 +87,20 @@ func parseFooter(data *segment.Data) (*footer, error) {
 		return nil, fmt.Errorf("unsupported version %d", rv.version)
 	}
 
-	chunkOffset := verOffset - chunkWidth
+	timeMaxOffset := verOffset - timeMaxWidth
+	timeMaxData, err := data.Read(timeMaxOffset, timeMaxOffset+timeMaxWidth)
+	if err != nil {
+		return nil, err
+	}
+	rv.docTimeMax = binary.BigEndian.Uint64(timeMaxData)
+	timeMinOffset := timeMaxOffset - timeMinWidth
+	timeMinData, err := data.Read(timeMinOffset, timeMinOffset+timeMinWidth)
+	if err != nil {
+		return nil, err
+	}
+	rv.docTimeMin = binary.BigEndian.Uint64(timeMinData)
+
+	chunkOffset := timeMinOffset - chunkWidth
 	chunkData, err := data.Read(chunkOffset, chunkOffset+chunkWidth)
 	if err != nil {
 		return nil, err

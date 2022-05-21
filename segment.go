@@ -83,6 +83,10 @@ func (s *Segment) Version() uint32 {
 	return s.footer.version
 }
 
+func (s *Segment) Timestamp() (int64, int64) {
+	return 0, 0
+}
+
 func (s *Segment) Size() int {
 	return int(s.size)
 }

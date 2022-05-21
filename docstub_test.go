@@ -87,6 +87,10 @@ func (f *FakeDocument) Len() int {
 	return len(*f)
 }
 
+func (f *FakeDocument) Timestamp() int64 {
+	return 0
+}
+
 func (f *FakeDocument) EachField(vf segment.VisitField) {
 	for _, ff := range *f {
 		vf(ff)

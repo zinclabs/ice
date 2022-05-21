@@ -173,6 +173,9 @@ type interim struct {
 	lastOutSize int
 
 	normCalc func(string, int) float32
+
+	docTimeMin int64
+	docTimeMax int64
 }
 
 func (s *interim) reset() (err error) {
@@ -218,6 +221,9 @@ func (s *interim) reset() (err error) {
 	s.tmp1 = s.tmp1[:0]
 	s.lastNumDocs = 0
 	s.lastOutSize = 0
+
+	s.docTimeMin = 0
+	s.docTimeMax = 0
 
 	return err
 }
@@ -305,11 +311,15 @@ func (s *interim) convert() (*footer, []uint64, error) {
 		return nil, nil, err
 	}
 
+	docTimeMin, docTimeMax := s.calcSegmentTimestamp()
+
 	return &footer{
 		storedIndexOffset: storedIndexOffset,
 		fieldsIndexOffset: fieldsIndexOffset,
 		docValueOffset:    fdvIndexOffset,
 		version:           Version,
+		docTimeMin:        uint64(docTimeMin),
+		docTimeMax:        uint64(docTimeMax),
 	}, dictOffsets, nil
 }
 
@@ -853,4 +863,19 @@ func (s *interim) writeDictsTermField(docTermMap [][]byte, dict map[string]uint6
 	tfEncoder.Reset()
 	locEncoder.Reset()
 	return nil
+}
+
+func (s *interim) calcSegmentTimestamp() (int64, int64) {
+	min := int64(math.MaxInt64)
+	max := int64(0)
+	for _, v := range s.results {
+		t := v.Timestamp()
+		if t < min {
+			min = t
+		}
+		if t > max {
+			max = t
+		}
+	}
+	return min, max
 }

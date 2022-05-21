@@ -10,3 +10,5 @@ require (
 	github.com/klauspost/compress v1.15.2
 	github.com/spf13/cobra v0.0.5
 )
+
+replace github.com/blugelabs/bluge_segment_api => ../bluge_segment_api

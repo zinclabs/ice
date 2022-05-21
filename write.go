@@ -227,6 +227,15 @@ func persistFooter(footer *footer, writerIn io.Writer) error {
 	if err != nil {
 		return err
 	}
+	// write out timestamp
+	err = binary.Write(w, binary.BigEndian, footer.docTimeMin)
+	if err != nil {
+		return err
+	}
+	err = binary.Write(w, binary.BigEndian, footer.docTimeMax)
+	if err != nil {
+		return err
+	}
 	// write out 32-bit version
 	err = binary.Write(w, binary.BigEndian, Version)
 	if err != nil {

@@ -303,6 +303,16 @@ func (s *Segment) NumDocs() uint64 {
 	return s.footer.numDocs
 }
 
+// DocTimeMin returns the minimum timestamp of documents in the file footer
+func (s *Segment) DocTimeMin() uint64 {
+	return s.footer.docTimeMin
+}
+
+// DocTimeMax returns the maximum timestamp of documents in the file footer
+func (s *Segment) DocTimeMax() uint64 {
+	return s.footer.docTimeMax
+}
+
 func (s *Segment) loadDvReaders() error {
 	if s.footer.docValueOffset == fieldNotUninverted || s.footer.numDocs == 0 {
 		return nil

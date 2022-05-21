@@ -33,6 +33,8 @@ var footerCmd = &cobra.Command{
 		fmt.Printf("Fields Idx: %d (%#x)\n", seg.FieldsIndexOffset(), seg.FieldsIndexOffset())
 		fmt.Printf("Stored Idx: %d (%#x)\n", seg.StoredIndexOffset(), seg.StoredIndexOffset())
 		fmt.Printf("DocValue Idx: %d (%#x)\n", seg.DocValueOffset(), seg.DocValueOffset())
+		fmt.Printf("Min Timestamp of Docs: %d\n", seg.DocTimeMin())
+		fmt.Printf("Max Timestamp of Docs: %d\n", seg.DocTimeMax())
 		fmt.Printf("Num Docs: %d\n", seg.NumDocs())
 		return nil
 	},

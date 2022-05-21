@@ -311,7 +311,7 @@ func (s *interim) convert() (*footer, []uint64, error) {
 		return nil, nil, err
 	}
 
-	docTimeMin, docTimeMax := s.calcSegmentTimestamp()
+	docTimeMin, docTimeMax := s.calcTimestamp()
 
 	return &footer{
 		storedIndexOffset: storedIndexOffset,
@@ -865,7 +865,7 @@ func (s *interim) writeDictsTermField(docTermMap [][]byte, dict map[string]uint6
 	return nil
 }
 
-func (s *interim) calcSegmentTimestamp() (int64, int64) {
+func (s *interim) calcTimestamp() (int64, int64) {
 	min := int64(math.MaxInt64)
 	max := int64(0)
 	for _, v := range s.results {

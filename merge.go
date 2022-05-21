@@ -127,6 +127,8 @@ func mergeToWriter(segments []*Segment, drops []*roaring.Bitmap,
 	var storedIndexOffset uint64
 	var fieldDocs, fieldFreqs map[uint16]uint64
 	var dictLocs []uint64
+	var docTimeMin = uint64(math.MaxInt64)
+	var docTimeMax uint64
 	if numDocs > 0 {
 		storedIndexOffset, newDocNums, err = mergeStoredAndRemap(segments, drops,
 			fieldsMap, fieldsInv, fieldsSame, numDocs, cr, closeCh)
@@ -139,6 +141,15 @@ func mergeToWriter(segments []*Segment, drops []*roaring.Bitmap,
 			newDocNums, numDocs, chunkMode, cr, closeCh)
 		if err != nil {
 			return nil, nil, err
+		}
+
+		for _, seg := range segments {
+			if seg.DocTimeMin() > 0 && seg.DocTimeMin() < docTimeMin {
+				docTimeMin = seg.DocTimeMin()
+			}
+			if seg.DocTimeMax() > docTimeMax {
+				docTimeMax = seg.DocTimeMax()
+			}
 		}
 	} else {
 		dictLocs = make([]uint64, len(fieldsInv))
@@ -155,6 +166,8 @@ func mergeToWriter(segments []*Segment, drops []*roaring.Bitmap,
 		storedIndexOffset: storedIndexOffset,
 		fieldsIndexOffset: fieldsIndexOffset,
 		docValueOffset:    docValueOffset,
+		docTimeMin:        docTimeMin,
+		docTimeMax:        docTimeMax,
 	}, nil
 }
 

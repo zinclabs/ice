@@ -27,7 +27,7 @@ import (
 	segment "github.com/blugelabs/bluge_segment_api"
 )
 
-const Version uint32 = 2
+const Version uint32 = 3
 
 const Type string = "ice"
 

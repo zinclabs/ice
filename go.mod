@@ -1,6 +1,6 @@
 module github.com/blugelabs/ice
 
-go 1.12
+go 1.16
 
 require (
 	github.com/RoaringBitmap/roaring v0.9.4
@@ -11,4 +11,4 @@ require (
 	github.com/spf13/cobra v0.0.5
 )
 
-replace github.com/blugelabs/bluge_segment_api => github.com/zinclabs/bluge_segment_api v0.2.1-0.20220521151415-cfa118d012e5
+replace github.com/blugelabs/bluge_segment_api => github.com/zinclabs/bluge_segment_api v0.2.1-0.20220523030708-2e8f9721fa17

@@ -40,7 +40,7 @@ type Segment struct {
 	fieldDocs  map[uint16]uint64 // fieldID -> # docs with value in field
 	fieldFreqs map[uint16]uint64 // fieldID -> # total tokens in field
 
-	storedFieldChunkOffset       []uint64 // stored field chunk offset
+	storedFieldChunkOffsets      []uint64 // stored field chunk offset
 	storedFieldChunkUncompressed []byte   // for uncompress cache
 
 	dictLocs       []uint64

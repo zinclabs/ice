@@ -779,9 +779,9 @@ func (s *Segment) copyStoredDocs(newDocNum uint64, newDocNumOffsets []uint64, do
 
 	// visit documents and rewrite to chunk
 	uncompressed := make([]byte, 0)
-	for i := 0; i < len(s.storedFieldChunkOffset)-1; i++ {
-		chunkOffstart := s.storedFieldChunkOffset[i]
-		chunkOffend := s.storedFieldChunkOffset[i+1]
+	for i := 0; i < len(s.storedFieldChunkOffsets)-1; i++ {
+		chunkOffstart := s.storedFieldChunkOffsets[i]
+		chunkOffend := s.storedFieldChunkOffsets[i+1]
 		if chunkOffstart == chunkOffend {
 			continue
 		}

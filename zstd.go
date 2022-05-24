@@ -56,3 +56,16 @@ func ZSTDCompress(dst, src []byte, compressionLevel int) ([]byte, error) {
 	})
 	return encoder.EncodeAll(src, dst[:0]), nil
 }
+
+// ZSTDCompressBound returns the worst case size needed for a destination buffer.
+// Klauspost ZSTD library does not provide any API for Compression Bound. This
+// calculation is based on the DataDog ZSTD library.
+// See https://pkg.go.dev/github.com/DataDog/zstd#CompressBound
+func ZSTDCompressBound(srcSize int) int {
+	lowLimit := 128 << 10 // 128 kB
+	var margin int
+	if srcSize < lowLimit {
+		margin = (lowLimit - srcSize) >> 11
+	}
+	return srcSize + (srcSize >> 8) + margin
+}

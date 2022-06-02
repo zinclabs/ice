@@ -880,5 +880,8 @@ func (s *interim) calcTimestamp() (int64, int64) {
 			max = t
 		}
 	}
+	if min == math.MaxInt64 {
+		min = 0
+	}
 	return min, max
 }

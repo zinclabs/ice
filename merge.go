@@ -154,6 +154,10 @@ func mergeToWriter(segments []*Segment, drops []*roaring.Bitmap,
 		dictLocs = make([]uint64, len(fieldsInv))
 	}
 
+	if docTimeMin == math.MaxInt64 {
+		docTimeMin = 0
+	}
+
 	var fieldsIndexOffset uint64
 	fieldsIndexOffset, err = persistFields(fieldsInv, fieldDocs, fieldFreqs, cr, dictLocs)
 	if err != nil {

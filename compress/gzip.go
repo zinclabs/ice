@@ -16,15 +16,32 @@
 package compress
 
 import (
-	s2c "github.com/klauspost/compress/s2"
+	"bytes"
+	"compress/gzip"
 )
 
-// S2Decompress decompresses a block using s2 algorithm.
-func S2Decompress(dst, src []byte) ([]byte, error) {
-	return s2c.Decode(dst, src)
+// GzipDecompress decompresses a block using gzip algorithm.
+func GzipDecompress(dst, src []byte) ([]byte, error) {
+	buf := bytes.NewBuffer(src)
+	r, err := gzip.NewReader(buf)
+	if err != nil {
+		return nil, err
+	}
+	out := bytes.NewBuffer(dst[:0])
+	out.ReadFrom(r)
+	return out.Bytes(), nil
 }
 
-// S2Compress compresses a block using s2 algorithm.
-func S2Compress(dst, src []byte) ([]byte, error) {
-	return s2c.EncodeBetter(dst, src), nil
+// GzipCompress compresses a block using gzip algorithm.
+func GzipCompress(dst, src []byte) ([]byte, error) {
+	buf := bytes.NewBuffer(dst[:0])
+	w := gzip.NewWriter(buf)
+	_, err := w.Write(src)
+	if err != nil {
+		return nil, err
+	}
+	if err = w.Close(); err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
 }

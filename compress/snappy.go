@@ -15,7 +15,7 @@
 
 package compress
 
-import "github.com/golang/snappy"
+import "github.com/klauspost/compress/snappy"
 
 // SnappyDecompress decompresses a block using snappy algorithm.
 func SnappyDecompress(dst, src []byte) ([]byte, error) {

@@ -7,7 +7,6 @@ require (
 	github.com/blevesearch/mmap-go v1.0.4
 	github.com/blevesearch/vellum v1.0.7
 	github.com/blugelabs/bluge_segment_api v0.2.0
-	github.com/golang/snappy v0.0.4
 	github.com/klauspost/compress v1.15.2
 	github.com/spf13/cobra v0.0.5
 )

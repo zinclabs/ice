@@ -23,7 +23,6 @@ const (
 	SNAPPY = iota
 	S2
 	ZSTD
-	GZIP
 )
 
 var Algorithm = S2
@@ -36,8 +35,6 @@ func Decompress(dst, src []byte) ([]byte, error) {
 		return S2Decompress(dst, src)
 	case ZSTD:
 		return ZSTDDecompress(dst, src)
-	case GZIP:
-		return GzipDecompress(dst, src)
 	default:
 		return nil, errors.New("unknown compress algorithm")
 	}
@@ -51,8 +48,6 @@ func Compress(dst, src []byte) ([]byte, error) {
 		return S2Compress(dst, src)
 	case ZSTD:
 		return ZSTDCompress(dst, src, ZSTDCompressionLevel)
-	case GZIP:
-		return GzipCompress(dst, src)
 	default:
 		return nil, errors.New("unknown compress algorithm")
 	}

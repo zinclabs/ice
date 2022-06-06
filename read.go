@@ -16,6 +16,8 @@ package ice
 
 import (
 	"encoding/binary"
+
+	"github.com/blugelabs/ice/compress"
 )
 
 func (s *Segment) initDecompressedStoredFieldChunks(n int) {
@@ -48,7 +50,7 @@ func (s *Segment) getDocStoredMetaAndUnCompressed(docNum uint64) (meta, data []b
 		}
 
 		// decompress it
-		storedFieldDecompressed.data, err = ZSTDDecompress(nil, compressed)
+		storedFieldDecompressed.data, err = compress.Decompress(nil, compressed)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -57,12 +59,21 @@ func (s *Segment) getDocStoredMetaAndUnCompressed(docNum uint64) (meta, data []b
 	uncompressed = storedFieldDecompressed.data
 	storedFieldDecompressed.m.Unlock()
 
-	metaLenData := uncompressed[int(storedOffset):int(storedOffset+binary.MaxVarintLen64)]
+	metaDataLenEnd := storedOffset + binary.MaxVarintLen64
+	if metaDataLenEnd > uint64(len(uncompressed)) {
+		metaDataLenEnd = uint64(len(uncompressed))
+	}
+	metaLenData := uncompressed[storedOffset:metaDataLenEnd]
+
 	var n uint64
 	metaLen, read := binary.Uvarint(metaLenData)
 	n += uint64(read)
 
-	dataLenData := uncompressed[int(storedOffset+n):int(storedOffset+n+binary.MaxVarintLen64)]
+	dataLenEnd := storedOffset + n + binary.MaxVarintLen64
+	if dataLenEnd > uint64(len(uncompressed)) {
+		dataLenEnd = uint64(len(uncompressed))
+	}
+	dataLenData := uncompressed[int(storedOffset+n):dataLenEnd]
 	dataLen, read := binary.Uvarint(dataLenData)
 	n += uint64(read)
 

@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/binary"
 	"io"
+
+	"github.com/blugelabs/ice/compress"
 )
 
 const defaultDocumentChunkSize uint32 = 128
@@ -70,7 +72,7 @@ func (c *chunkedDocumentCoder) newLine() error {
 func (c *chunkedDocumentCoder) flush() error {
 	if c.buf.Len() > 0 {
 		var err error
-		c.compressed, err = ZSTDCompress(c.compressed[:cap(c.compressed)], c.buf.Bytes(), ZSTDCompressionLevel)
+		c.compressed, err = compress.Compress(c.compressed[:cap(c.compressed)], c.buf.Bytes())
 		if err != nil {
 			return err
 		}

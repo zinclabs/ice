@@ -19,6 +19,7 @@ import (
 	"fmt"
 
 	segment "github.com/blugelabs/bluge_segment_api"
+	"github.com/blugelabs/ice/compress"
 )
 
 type chunkedIntDecoder struct {
@@ -87,7 +88,10 @@ func (d *chunkedIntDecoder) loadChunk(chunk int) error {
 	if err != nil {
 		return err
 	}
-	d.uncompressed, err = ZSTDDecompress(d.uncompressed[:cap(d.uncompressed)], curChunkBytesData)
+	if len(curChunkBytesData) == 0 {
+		return nil
+	}
+	d.uncompressed, err = compress.Decompress(d.uncompressed[:cap(d.uncompressed)], curChunkBytesData)
 	if err != nil {
 		return err
 	}

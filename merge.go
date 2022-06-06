@@ -26,6 +26,7 @@ import (
 	"github.com/RoaringBitmap/roaring"
 	"github.com/blevesearch/vellum"
 	segment "github.com/blugelabs/bluge_segment_api"
+	"github.com/blugelabs/ice/compress"
 )
 
 const docDropped = math.MaxInt64 // sentinel docNum to represent a deleted doc
@@ -793,7 +794,7 @@ func (s *Segment) copyStoredDocs(newDocNum uint64, newDocNumOffsets []uint64, do
 		if err != nil {
 			return err
 		}
-		uncompressed, err = ZSTDDecompress(uncompressed[:cap(uncompressed)], compressed)
+		uncompressed, err = compress.Decompress(uncompressed[:cap(uncompressed)], compressed)
 		if err != nil {
 			return err
 		}

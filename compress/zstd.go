@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ice
+package compress
 
 import (
 	"log"
@@ -23,7 +23,7 @@ import (
 	"github.com/klauspost/compress/zstd"
 )
 
-const ZSTDCompressionLevel = 3 // 1, 3, 9
+var ZSTDCompressionLevel = 3 // 1, 3, 9
 
 var (
 	decoder *zstd.Decoder

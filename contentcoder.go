@@ -18,6 +18,8 @@ import (
 	"bytes"
 	"encoding/binary"
 	"io"
+
+	"github.com/blugelabs/ice/compress"
 )
 
 var termSeparator byte = 0xff
@@ -120,7 +122,7 @@ func (c *chunkedContentCoder) flushContents() error {
 	metaData := c.chunkMetaBuf.Bytes()
 	c.final = append(c.final, c.chunkMetaBuf.Bytes()...)
 	// write the compressed data to the final data
-	c.compressed, err = ZSTDCompress(c.compressed[:cap(c.compressed)], c.chunkBuf.Bytes(), ZSTDCompressionLevel)
+	c.compressed, err = compress.Compress(c.compressed[:cap(c.compressed)], c.chunkBuf.Bytes())
 	if err != nil {
 		return err
 	}

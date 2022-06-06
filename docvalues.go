@@ -22,6 +22,7 @@ import (
 	"sort"
 
 	segment "github.com/blugelabs/bluge_segment_api"
+	"github.com/blugelabs/ice/compress"
 )
 
 type docNumTermsVisitor func(docNum uint64, terms []byte) error
@@ -209,7 +210,7 @@ func (di *docValueReader) iterateAllDocValues(s *Segment, visitor docNumTermsVis
 		}
 
 		// uncompress the already loaded data
-		uncompressed, err := ZSTDDecompress(di.uncompressed[:cap(di.uncompressed)], di.curChunkData)
+		uncompressed, err := compress.Decompress(di.uncompressed[:cap(di.uncompressed)], di.curChunkData)
 		if err != nil {
 			return err
 		}
@@ -244,7 +245,7 @@ func (di *docValueReader) visitDocValues(docNum uint64,
 		uncompressed = di.uncompressed
 	} else {
 		// uncompress the already loaded data
-		uncompressed, err = ZSTDDecompress(di.uncompressed[:cap(di.uncompressed)], di.curChunkData)
+		uncompressed, err = compress.Decompress(di.uncompressed[:cap(di.uncompressed)], di.curChunkData)
 		if err != nil {
 			return err
 		}

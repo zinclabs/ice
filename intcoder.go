@@ -18,6 +18,8 @@ import (
 	"bytes"
 	"encoding/binary"
 	"io"
+
+	"github.com/blugelabs/ice/compress"
 )
 
 // We can safely use 0 to represent termNotEncoded since 0
@@ -104,7 +106,7 @@ func (c *chunkedIntCoder) Add(docNum uint64, vals ...uint64) error {
 // to be encoded.
 func (c *chunkedIntCoder) Close() error {
 	var err error
-	c.compressed, err = ZSTDCompress(c.compressed[:cap(c.compressed)], c.chunkBuf.Bytes(), ZSTDCompressionLevel)
+	c.compressed, err = compress.Compress(c.compressed[:cap(c.compressed)], c.chunkBuf.Bytes())
 	if err != nil {
 		return err
 	}
